@@ -1,0 +1,199 @@
+<html>
+    <head>
+        <title>final_01</title>
+    </head>
+    
+    <body bgcolor="#fbe4ff">
+
+        <canvas width="500"+canva_x height="550" id="myCanvas" 
+            style="border:1px solid;
+            position:absolute;top: 50px;left: 350px;">
+        </canvas>
+
+        <input type="button" id="save" value="畫完了點我" 
+            style="height: 30px; width:80px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b;
+            position: absolute;top:530px;left:880px; ">
+        <input type="button" id="clear" value="清空畫布" 
+            style="height: 30px; width:80px;border:2px #a4133c solid;background-color:#ffccd5;color: #590d22;
+            position: absolute;top:570px;left:880px;">
+        <br><br>
+        <input id="text" placeholder="文字內容" 
+            style="height: 30px; width:100px;border:2px ;color: #72369d; 
+            position: absolute;top:50px;left:20px; ">
+        <input type="button" id="showtext" value="按我" 
+            style="height: 30px; width:50px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b; 
+            position: absolute;top:50px;left:150px;">
+        <br><br>
+        <input type="button" id="pen_01" value="筆刷一" 
+            style="height: 30px; width:60px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b; 
+            position: absolute;top:90px;left:20px;">
+        <input type="button" id="pen_02" value="筆刷二" 
+            style="height: 30px; width:60px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b; 
+            position: absolute;top:90px;left:100px;">
+        <input type="button" id="cake" value="cake" 
+            style="height: 30px; width:60px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b; 
+            position: absolute;top:90px;left:180px;">
+        <br><br><br>
+
+        <form>
+            <span>
+                <p style="color: #47126b; position: absolute;top:140px;left:20px;">調整線條粗細：</p>
+                <input id= "line" type="range" min="0" max="20" step="0.5" value="100" style="position: absolute;top:157px;left:135px;">
+            </span>
+            <br>
+            <span>
+                <p style="color: #47126b;position: absolute;top:180px;left:20px;">調整線條顏色：</p>
+                <input id="pick" type="color" style="position: absolute;top:195px;left:135px;">
+            </span>
+            
+            <br><br><br>
+            <input type="button" id="song01" value="10C.mp3" 
+                style="margin-left: 10px ;height: 30px; width:80px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b; 
+                position: absolute;top:100px;right:20px;">
+            <input type="button" id="song02" value="223_AM.mp3" 
+                style="margin-left: 10px ;height: 30px; width:90px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b;
+                position: absolute;top:140px;right:20px;">
+            <input type="button" id="song03" value="303_PM.mp3" 
+                style="margin-left: 10px ;height: 30px; width:90px;border:2px #BC98FF solid;background-color:#D7B8FF;color: #47126b;
+                position: absolute;top:180px;right:20px;">
+            <br>
+        </form>
+        <audio id = "Player" src="10C.mp3" autoplay loop controls 
+            style="position: absolute; top:20px;right:20px;">
+        </audio>
+        
+
+
+        <script>
+            //畫布
+            var canvas = document.getElementById("myCanvas"); // 取得物件
+            var ctx = canvas.getContext("2d"); // 取得繪圖環境
+            var drawMode, mx, my;
+            var img = document.createElement("img"); // 建立元素
+            var canva_x,canva_y;
+
+            Player = document.getElementById("Player");
+            songList = document.getElementById("songList");
+            s01 = document.getElementById("song01");
+            s02 = document.getElementById("song02");
+            s03 = document.getElementById("song03");
+            var songNames;
+
+            document.getElementById("Player").volume = 0.3
+
+            s01.onclick = function(){
+                songNames=1
+                Player.src = "10C.mp3";
+            Player.play();
+            }
+            s02.onclick = function(){
+                songNames=2
+                Player.src = "223_AM.mp3";
+            Player.play();
+            }
+            s03.onclick = function(){
+                songNames=3
+                Player.src = "303_PM.mp3";
+            Player.play();
+            }
+
+            //寫字
+            document.getElementById("showtext").onclick = function(){
+                canvas.onmousedown = function(ev){
+                    ctx.font = '40pt "標楷體"';
+                    ctx.fillStyle = document.getElementById("pick").value;
+                    mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset;
+                    my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset;
+                    ctx.fillText(document.getElementById("text").value,mx,my)
+                }
+            }
+
+            //清除畫布
+            document.getElementById("clear").onclick = function(){
+                ctx.beginPath();
+                ctx.strokeStyle = '#fbe4ff';
+                ctx.fillStyle = '#fbe4ff';
+                ctx.rect(0, 0, 1000, 1000);
+                ctx.fill();
+                ctx.Stroke();
+            }
+
+            //畫出圖片
+            function drawCake(x,y){
+                img.src = "cake.png";
+                img.onload = function(){ // 影像載入後，執行裡面的內容
+                    ctx.drawImage(img, x,y,70,50); // 畫出影像
+                    drawMode = true;
+                }
+            }
+
+            //設定相關屬性
+            document.getElementById("cake").onclick = function(){
+                canvas.onmousedown = function(ev){
+                    mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset-35;
+                    my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset-25;
+                    drawCake(mx,my)
+                }
+            }
+
+            document.getElementById("pen_01").onclick = function(){
+                canvas.onmousedown = function(ev){
+                ctx.beginPath();
+                ctx.strokeStyle = document.getElementById("pick").value;
+                ctx.lineWidth = document.getElementById("line").value;
+                mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset;
+                my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset;
+                ctx.moveTo(mx, my);
+                drawMode = true;
+                }
+            
+                canvas.onmousemove = function(ev){
+                    if(drawMode){
+                        mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset;
+                        my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset;
+                        ctx.lineTo(mx, my);
+                        ctx.stroke();
+                    }
+                }
+            
+                canvas.onmouseup = function(){
+                    drawMode = false;
+                }
+            }
+
+            //筆刷一號
+            document.getElementById("pen_02").onclick = function(){
+                canvas.onmousedown = function(ev){
+                ctx.beginPath();
+                ctx.strokeStyle = document.getElementById("pick").value;
+                ctx.lineWidth = document.getElementById("line").value;
+                ctx.lineCap="round" //設定畫筆端點為圓的
+                ctx.lineJoin="round" //設定畫筆轉彎處為圓的
+                mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset;
+                my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset;
+                ctx.moveTo(mx, my);
+                drawMode = true;
+                }
+            
+                canvas.onmousemove = function(ev){
+                    if(drawMode){
+                        mx = event.clientX - parseInt(canvas.style.left) + window.pageXOffset;
+                        my = event.clientY - parseInt(canvas.style.top) + window.pageYOffset;
+                        ctx.lineTo(mx, my);
+                        ctx.stroke();
+                    }
+                }
+            
+                canvas.onmouseup = function(){
+                    drawMode = false;
+                }
+            }
+
+            document.getElementById("save").onclick = function(){
+                new_win = window.open();
+                new_win.document.write("<img src='" + ctx.canvas.toDataURL('img/png') + "'>")
+            }
+        </script>
+
+    </body>
+</html>
